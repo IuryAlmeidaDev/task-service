@@ -1,7 +1,9 @@
 package dev.iury.lifeos.task.persistence;
 
 import java.time.Instant;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -12,7 +14,6 @@ import dev.iury.lifeos.task.domain.model.TaskStatus;
 import io.quarkus.hibernate.orm.panache.PanacheQuery;
 import io.quarkus.hibernate.orm.panache.PanacheRepositoryBase;
 import io.quarkus.panache.common.Page;
-import io.quarkus.panache.common.Parameters;
 import io.quarkus.panache.common.Sort;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -22,35 +23,37 @@ public class TaskRepository implements PanacheRepositoryBase<Task, UUID> {
     public PageResult<Task> findActive(TaskFilter filter, Instant now, int page, int size) {
         StringBuilder hql = new StringBuilder(
                 "deletedAt is null and (startDate is null or startDate <= function('timezone', timezone, :now))");
-        Parameters parameters = Parameters.with("now", now);
+        Map<String, Object> parameters = new HashMap<>();
+        parameters.put("now", now);
         if (filter.status() != null) {
             hql.append(" and status = :status");
-            parameters.and("status", filter.status());
+            parameters.put("status", filter.status());
         }
         if (filter.priority() != null) {
             hql.append(" and priority = :priority");
-            parameters.and("priority", filter.priority());
+            parameters.put("priority", filter.priority());
         }
         if (filter.projectId() != null) {
             hql.append(" and projectId = :projectId");
-            parameters.and("projectId", filter.projectId());
+            parameters.put("projectId", filter.projectId());
         }
         if (filter.dueFrom() != null) {
             hql.append(" and dueDate >= :dueFrom");
-            parameters.and("dueFrom", filter.dueFrom());
+            parameters.put("dueFrom", filter.dueFrom());
         }
         if (filter.dueTo() != null) {
             hql.append(" and dueDate <= :dueTo");
-            parameters.and("dueTo", filter.dueTo());
+            parameters.put("dueTo", filter.dueTo());
         }
         if (filter.tagId() != null) {
             hql.append(" and id in (select tt.id.taskId from TaskTag tt where tt.id.tagId = :tagId)");
-            parameters.and("tagId", filter.tagId());
+            parameters.put("tagId", filter.tagId());
         }
 
         PanacheQuery<Task> query = find(
                 hql.toString(),
-                Sort.by("dueDate").nullsLast().and("createdAt", Sort.Direction.Descending),
+                Sort.by("dueDate", Sort.Direction.Ascending, Sort.NullPrecedence.NULLS_LAST)
+                        .and("createdAt", Sort.Direction.Descending),
                 parameters);
         long total = query.count();
         List<Task> items = query.page(Page.of(page, size)).list();
@@ -66,7 +69,7 @@ public class TaskRepository implements PanacheRepositoryBase<Task, UUID> {
     }
 
     public List<Task> listOverdue() {
-        return list("deletedAt is null and status", TaskStatus.OVERDUE);
+        return list("deletedAt is null and status = ?1", TaskStatus.OVERDUE);
     }
 
     public List<Task> listChildren(UUID parentId) {
