@@ -75,7 +75,7 @@ task-service/
 
 - [ ] **Step 1: criar apenas o build e escrever o teste falho**
 
-Crie o `pom.xml` com BOM `io.quarkus.platform:quarkus-bom:3.37.3`, `maven.compiler.release=21` e estas dependências exatas: `quarkus-arc`, `quarkus-rest-jackson`, `quarkus-hibernate-orm-panache`, `quarkus-jdbc-postgresql`, `quarkus-flyway`, `quarkus-messaging-kafka`, `quarkus-smallrye-fault-tolerance`, `quarkus-scheduler`, `quarkus-hibernate-validator`, `org.mnode.ical4j:ical4j:4.2.5`, `org.jsoup:jsoup:1.22.2`, `quarkus-junit5` (test), `quarkus-junit-mockito` (test), `org.junit.jupiter:junit-jupiter-params` (test) e `io.rest-assured:rest-assured` (test). Configure `io.quarkus.platform:quarkus-maven-plugin:3.37.3` com `<extensions>true</extensions>`; `@TestTransaction` já é fornecido pelo suporte de teste Quarkus.
+Crie o `pom.xml` com BOM `io.quarkus.platform:quarkus-bom:3.37.3`, `maven.compiler.release=21` e estas dependências exatas: `quarkus-arc`, `quarkus-rest-jackson`, `quarkus-hibernate-orm-panache`, `quarkus-jdbc-postgresql`, `quarkus-flyway`, `quarkus-messaging-kafka`, `quarkus-smallrye-fault-tolerance`, `quarkus-scheduler`, `quarkus-hibernate-validator`, `org.mnode.ical4j:ical4j:4.2.5`, `org.jsoup:jsoup:1.22.2`, `quarkus-junit` (test), `quarkus-junit-mockito` (test), `org.junit.jupiter:junit-jupiter-params` (test) e `io.rest-assured:rest-assured` (test). Configure `io.quarkus.platform:quarkus-maven-plugin:3.37.3` com `<extensions>true</extensions>`; `@TestTransaction` já é fornecido pelo suporte de teste Quarkus.
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -115,7 +115,7 @@ Crie o `pom.xml` com BOM `io.quarkus.platform:quarkus-bom:3.37.3`, `maven.compil
     <dependency><groupId>io.quarkus</groupId><artifactId>quarkus-hibernate-validator</artifactId></dependency>
     <dependency><groupId>org.mnode.ical4j</groupId><artifactId>ical4j</artifactId><version>4.2.5</version></dependency>
     <dependency><groupId>org.jsoup</groupId><artifactId>jsoup</artifactId><version>1.22.2</version></dependency>
-    <dependency><groupId>io.quarkus</groupId><artifactId>quarkus-junit5</artifactId><scope>test</scope></dependency>
+    <dependency><groupId>io.quarkus</groupId><artifactId>quarkus-junit</artifactId><scope>test</scope></dependency>
     <dependency><groupId>io.quarkus</groupId><artifactId>quarkus-junit-mockito</artifactId><scope>test</scope></dependency>
     <dependency><groupId>org.junit.jupiter</groupId><artifactId>junit-jupiter-params</artifactId><scope>test</scope></dependency>
     <dependency><groupId>io.rest-assured</groupId><artifactId>rest-assured</artifactId><scope>test</scope></dependency>
